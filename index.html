@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LandTheInterview — Your resume isn't the problem. The mismatch is.</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0a0a0a;
+      --off-white: #f5f2ec;
+      --cream: #ede9e0;
+      --accent: #c84b2f;
+      --accent-light: #e8673e;
+      --muted: #7a7060;
+      --card-bg: #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--off-white);
+      color: var(--black);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* NOISE TEXTURE OVERLAY */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.4;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 24px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(245, 242, 236, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-weight: 900;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+      color: var(--black);
+    }
+
+    .logo span {
+      color: var(--accent);
+    }
+
+    .nav-cta {
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid var(--accent);
+      padding-bottom: 2px;
+      transition: opacity 0.2s;
+    }
+
+    .nav-cta:hover { opacity: 0.7; }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding-top: 80px;
+    }
+
+    .hero-left {
+      padding: 80px 48px 80px 64px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      animation: fadeUp 0.9s ease both;
+    }
+
+    .eyebrow {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .eyebrow::before {
+      content: '';
+      display: block;
+      width: 28px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.6rem, 4.5vw, 4rem);
+      font-weight: 900;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      margin-bottom: 28px;
+      color: var(--black);
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: var(--muted);
+      max-width: 420px;
+      margin-bottom: 48px;
+      font-weight: 300;
+    }
+
+    /* FORM */
+    .signup-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 420px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    input[type="email"],
+    input[type="text"] {
+      flex: 1;
+      padding: 16px 20px;
+      border: 1.5px solid rgba(0,0,0,0.12);
+      background: white;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.92rem;
+      color: var(--black);
+      outline: none;
+      transition: border-color 0.2s;
+      border-radius: 2px;
+    }
+
+    input:focus {
+      border-color: var(--accent);
+    }
+
+    input::placeholder {
+      color: #b0a898;
+    }
+
+    .btn-primary {
+      padding: 16px 32px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      border-radius: 2px;
+      white-space: nowrap;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-light);
+      transform: translateY(-1px);
+    }
+
+    .form-note {
+      font-size: 0.75rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .form-note strong {
+      color: var(--black);
+      font-weight: 500;
+    }
+
+    /* SUCCESS STATE */
+    .success-msg {
+      display: none;
+      padding: 20px 24px;
+      background: #f0faf4;
+      border: 1.5px solid #2d9e6b;
+      border-radius: 2px;
+      font-size: 0.9rem;
+      color: #1a6b47;
+      line-height: 1.6;
+    }
+
+    /* HERO RIGHT */
+    .hero-right {
+      background: var(--black);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 48px;
+      position: relative;
+      overflow: hidden;
+      animation: fadeIn 1.2s ease both 0.3s;
+    }
+
+    .hero-right::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(200, 75, 47, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* RICH MOCK UI */
+    .mock-window {
+      width: 100%;
+      max-width: 420px;
+      background: #111;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.06);
+    }
+
+    .mock-titlebar {
+      background: #1a1a1a;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-red { background: #ff5f57; }
+    .dot-yellow { background: #febc2e; }
+    .dot-green { background: #28c840; }
+
+    .mock-url {
+      flex: 1;
+      margin-left: 8px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 4px;
+      padding: 5px 12px;
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.25);
+      letter-spacing: 0.02em;
+    }
+
+    .mock-body {
+      padding: 20px;
+    }
+
+    /* STEP INDICATORS */
+    .mock-steps {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 18px;
+    }
+
+    .mock-step-pill {
+      flex: 1;
+      height: 3px;
+      border-radius: 2px;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .mock-step-pill.active { background: var(--accent); }
+    .mock-step-pill.done { background: #4ade80; }
+
+    /* JD INPUT AREA */
+    .mock-input-area {
+      background: #1a1a1a;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 6px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mock-input-label {
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.25);
+      margin-bottom: 8px;
+    }
+
+    .mock-typing-text {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.5;
+      min-height: 36px;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 2px;
+      height: 12px;
+      background: var(--accent);
+      margin-left: 1px;
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+
+    /* PROCESSING ANIMATION */
+    .mock-processing {
+      display: none;
+      background: #1a1a1a;
+      border-radius: 6px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .processing-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+      font-size: 0.72rem;
+    }
+
+    .processing-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .p-done { background: #4ade80; }
+    .p-active { background: var(--accent); animation: pulse 0.8s ease-in-out infinite; }
+    .p-wait { background: rgba(255,255,255,0.15); }
+
+    .p-text-done { color: rgba(255,255,255,0.5); text-decoration: line-through; }
+    .p-text-active { color: white; }
+    .p-text-wait { color: rgba(255,255,255,0.2); }
+
+    .shimmer-bar {
+      height: 5px;
+      border-radius: 3px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.05) 100%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      margin-top: 4px;
+    }
+
+    /* RESULTS */
+    .mock-results {
+      display: none;
+    }
+
+    .result-score-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(135deg, #0d2b1a, #0a1f12);
+      border: 1px solid rgba(74,222,128,0.2);
+      border-radius: 6px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+    }
+
+    .big-score {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8rem;
+      font-weight: 900;
+      color: #4ade80;
+      line-height: 1;
+    }
+
+    .score-context {
+      text-align: right;
+    }
+
+    .score-context-top {
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.35);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 4px;
+    }
+
+    .score-context-num {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #4ade80;
+    }
+
+    .score-context-sub {
+      font-size: 0.62rem;
+      color: rgba(255,255,255,0.3);
+    }
+
+    .score-radial {
+      width: 56px;
+      height: 56px;
+    }
+
+    .keywords-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 10px;
+    }
+
+    .kw-tag {
+      padding: 4px 9px;
+      border-radius: 3px;
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+    }
+
+    .kw-match { background: rgba(74,222,128,0.12); color: #4ade80; border: 1px solid rgba(74,222,128,0.2); }
+    .kw-partial { background: rgba(251,146,60,0.12); color: #fb923c; border: 1px solid rgba(251,146,60,0.2); }
+    .kw-missing { background: rgba(248,113,113,0.12); color: #f87171; border: 1px solid rgba(248,113,113,0.2); }
+
+    .rewrite-preview {
+      background: #1a1a1a;
+      border-radius: 6px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      border-left: 2px solid #4ade80;
+    }
+
+    .rp-label {
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #4ade80;
+      margin-bottom: 8px;
+    }
+
+    .rp-line {
+      height: 5px;
+      border-radius: 3px;
+      background: rgba(255,255,255,0.08);
+      margin-bottom: 5px;
+    }
+
+    .rp-line.w95 { width: 95%; }
+    .rp-line.w75 { width: 75%; }
+    .rp-line.w85 { width: 85%; }
+    .rp-line.w65 { width: 65%; }
+
+    .mock-dl-btn {
+      width: 100%;
+      padding: 13px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: default;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .mock-restart {
+      text-align: center;
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.2);
+      margin-top: 8px;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .mock-restart:hover { color: rgba(255,255,255,0.5); }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    .waitlist-proof {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 20px;
+      padding: 14px 18px;
+      background: white;
+      border-radius: 4px;
+      border: 1px solid rgba(0,0,0,0.07);
+      max-width: 420px;
+      animation: fadeUp 0.9s ease 0.4s both;
+    }
+
+    .waitlist-avatars {
+      display: flex;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid var(--off-white);
+      margin-left: -8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .avatar:first-child { margin-left: 0; }
+
+    .waitlist-text {
+      font-size: 0.82rem;
+      color: var(--black);
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    .waitlist-text strong {
+      color: var(--accent);
+    }
+
+    .waitlist-sub {
+      font-size: 0.7rem;
+      color: var(--muted);
+      font-weight: 300;
+      margin-top: 2px;
+    }
+    .section {
+      padding: 100px 64px;
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-label::before {
+      content: '';
+      display: block;
+      width: 28px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 3vw, 2.8rem);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 64px;
+      max-width: 500px;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+
+    .step {
+      background: white;
+      padding: 40px 36px;
+      position: relative;
+      transition: transform 0.2s;
+    }
+
+    .step:hover { transform: translateY(-4px); }
+
+    .step-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: var(--cream);
+      line-height: 1;
+      margin-bottom: 24px;
+    }
+
+    .step-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--black);
+    }
+
+    .step-desc {
+      font-size: 0.88rem;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+
+    /* OFFER BANNER */
+    .offer {
+      background: var(--black);
+      color: white;
+      padding: 80px 64px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .offer::before {
+      content: '';
+      position: absolute;
+      bottom: -150px;
+      left: -150px;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(200, 75, 47, 0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .offer-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 3vw, 2.8rem);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .offer-title em {
+      font-style: italic;
+      color: var(--accent-light);
+    }
+
+    .offer-sub {
+      margin-top: 16px;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .offer-perks {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+
+    .offer-perks li {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      font-size: 0.92rem;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.5;
+    }
+
+    .perk-icon {
+      color: var(--accent-light);
+      font-size: 1rem;
+      margin-top: 1px;
+      flex-shrink: 0;
+    }
+
+    .offer-form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .offer-form input {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+    .offer-form input::placeholder { color: rgba(255,255,255,0.3); }
+    .offer-form input:focus { border-color: var(--accent-light); }
+
+    .offer-note {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.3);
+      line-height: 1.5;
+    }
+
+    /* SOCIAL PROOF */
+    .proof {
+      padding: 80px 64px;
+      background: var(--cream);
+      text-align: center;
+    }
+
+    .proof-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      margin-bottom: 40px;
+    }
+
+    .proof-stats {
+      display: flex;
+      justify-content: center;
+      gap: 80px;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8rem;
+      font-weight: 900;
+      color: var(--black);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 32px 64px;
+      border-top: 1px solid rgba(0,0,0,0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-weight: 900;
+      font-size: 0.95rem;
+      color: var(--black);
+    }
+
+    .footer-logo span { color: var(--accent); }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-links a {
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--black); }
+
+    .footer-copy {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; transform: translateY(0); }
+      50% { opacity: 1; transform: translateY(3px); }
+    }
+
+
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      nav { padding: 20px 24px; }
+      .hero { grid-template-columns: 1fr; }
+      .hero-right { min-height: 400px; }
+      .hero-left { padding: 48px 24px; }
+      .section { padding: 64px 24px; }
+      .steps { grid-template-columns: 1fr; }
+      .offer { grid-template-columns: 1fr; padding: 64px 24px; gap: 40px; }
+      .proof-stats { gap: 40px; }
+      .proof { padding: 64px 24px; }
+      footer { padding: 24px; flex-direction: column; gap: 16px; text-align: center; }
+      .footer-links { flex-wrap: wrap; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo">Land<span>The</span>Interview</div>
+    <a href="#early-access" class="nav-cta">Get Early Access</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-left">
+      <div class="eyebrow">AI-Powered Resume Tailoring</div>
+      <h1>Your resume isn't the problem.<br><em>The mismatch is.</em></h1>
+      <p class="hero-sub">
+        Paste any job description. Upload your CV. Get a perfectly tailored resume in seconds — written in the exact language the hiring manager is looking for.
+      </p>
+
+      <form class="signup-form" id="heroForm" onsubmit="handleSubmit(event, 'heroSuccess')">
+        <div class="form-row">
+          <input type="email" placeholder="Your email address" required />
+          <button type="submit" class="btn-primary">Get Early Access</button>
+        </div>
+        <p class="form-note">
+          <strong>Free for 1 month.</strong> No credit card. No commitment. Just better applications. Limited spots only.
+        </p>
+      </form>
+      <div class="success-msg" id="heroSuccess">
+        🎉 You're on the list. We'll reach out with early access shortly. Share this with a friend who's job hunting — they'll thank you.
+      </div>
+
+      <!-- SOCIAL PROOF -->
+      <div class="waitlist-proof">
+        <div class="waitlist-avatars">
+          <div class="avatar" style="background:#e8673e;">R</div>
+          <div class="avatar" style="background:#4ade80; color:#0a2b15;">S</div>
+          <div class="avatar" style="background:#60a5fa; color:#0a1929;">P</div>
+          <div class="avatar" style="background:#f472b6; color:#2d0a1f;">A</div>
+          <div class="avatar" style="background:#facc15; color:#1a1200;">M</div>
+        </div>
+        <div class="waitlist-text">
+          <strong id="waitlist-count">4,000+</strong> people already on the waitlist
+          <div class="waitlist-sub">Spots filling fast — early access is free for limited time</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="mock-window">
+        <div class="mock-titlebar">
+          <div class="dot dot-red"></div>
+          <div class="dot dot-yellow"></div>
+          <div class="dot dot-green"></div>
+          <div class="mock-url">landtheinterview.com/tailor</div>
+        </div>
+        <div class="mock-body">
+          <!-- Step pills -->
+          <div class="mock-steps">
+            <div class="mock-step-pill done" id="pill1"></div>
+            <div class="mock-step-pill active" id="pill2"></div>
+            <div class="mock-step-pill wait" id="pill3"></div>
+          </div>
+
+          <!-- Phase 1: Typing JD -->
+          <div id="phase-input">
+            <div class="mock-input-area">
+              <div class="mock-input-label">Paste Job Description</div>
+              <div class="mock-typing-text" id="typing-text"><span class="cursor"></span></div>
+            </div>
+            <div class="mock-input-area">
+              <div class="mock-input-label">Your Resume — Uploaded ✓</div>
+              <div style="font-size:0.72rem; color:rgba(255,255,255,0.4);">Deeksha_Resume_2026.pdf</div>
+            </div>
+          </div>
+
+          <!-- Phase 2: Processing -->
+          <div class="mock-processing" id="phase-processing">
+            <div class="processing-row">
+              <div class="processing-dot p-done"></div>
+              <span class="p-text-done">Reading job description</span>
+            </div>
+            <div class="processing-row">
+              <div class="processing-dot p-active" id="proc-dot-2"></div>
+              <span class="p-text-active" id="proc-text-2">Matching your skills to JD keywords</span>
+            </div>
+            <div class="shimmer-bar"></div>
+            <div class="processing-row" style="margin-top:8px;">
+              <div class="processing-dot p-wait" id="proc-dot-3"></div>
+              <span class="p-text-wait" id="proc-text-3">Rewriting resume in JD language</span>
+            </div>
+            <div class="processing-row">
+              <div class="processing-dot p-wait" id="proc-dot-4"></div>
+              <span class="p-text-wait" id="proc-text-4">Calculating match score</span>
+            </div>
+          </div>
+
+          <!-- Phase 3: Results -->
+          <div class="mock-results" id="phase-results">
+            <div class="result-score-row">
+              <div>
+                <div style="font-size:0.6rem; color:rgba(255,255,255,0.3); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:4px;">Match Score</div>
+                <div class="big-score" id="score-counter">0%</div>
+              </div>
+              <svg class="score-radial" viewBox="0 0 56 56">
+                <circle cx="28" cy="28" r="22" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="4"/>
+                <circle cx="28" cy="28" r="22" fill="none" stroke="#4ade80" stroke-width="4"
+                  stroke-dasharray="138.2" stroke-dashoffset="138.2"
+                  stroke-linecap="round" transform="rotate(-90 28 28)"
+                  id="score-circle" style="transition: stroke-dashoffset 1.5s ease;"/>
+              </svg>
+              <div class="score-context">
+                <div class="score-context-top">Better than</div>
+                <div class="score-context-num">82%</div>
+                <div class="score-context-sub">of applicants</div>
+              </div>
+            </div>
+
+            <div class="keywords-row">
+              <div class="kw-tag kw-match">✓ Product Strategy</div>
+              <div class="kw-tag kw-match">✓ Stakeholder Mgmt</div>
+              <div class="kw-tag kw-match">✓ Growth Metrics</div>
+              <div class="kw-tag kw-partial">~ Agile / Scrum</div>
+              <div class="kw-tag kw-missing">✗ SQL</div>
+            </div>
+
+            <div class="rewrite-preview">
+              <div class="rp-label">✦ Tailored Resume Ready</div>
+              <div class="rp-line w95"></div>
+              <div class="rp-line w75"></div>
+              <div class="rp-line w85"></div>
+              <div class="rp-line w65"></div>
+            </div>
+
+            <button class="mock-dl-btn">⬇ Download Tailored Resume</button>
+            <div class="mock-restart" onclick="restartAnimation()">↺ Try another JD</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROOF STRIP -->
+  <div class="proof">
+    <div class="proof-title">Why the same CV never works twice</div>
+    <div class="proof-stats">
+      <div class="stat">
+        <div class="stat-num">73%</div>
+        <div class="stat-label">Resumes rejected before<br>a human reads them</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">6 sec</div>
+        <div class="stat-label">Average recruiter<br>scan time</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">3×</div>
+        <div class="stat-label">More callbacks with<br>tailored resumes</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <section class="section">
+    <div class="section-label">How it works</div>
+    <h2 class="section-title">Three steps.<br>One interview.</h2>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-title">Paste the Job Description</div>
+        <div class="step-desc">Drop in the JD URL or paste the text. Our AI reads what the hiring manager actually wants — not just the keywords.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-title">Upload Your Resume</div>
+        <div class="step-desc">PDF or Word. We map your experience to the JD's language — surfacing the right skills, in the right words, every time.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-title">Download & Apply</div>
+        <div class="step-desc">Get a tailored resume in seconds. See your match score. Know you're sending your best shot before you hit submit.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EARLY ACCESS OFFER -->
+  <section class="offer" id="early-access">
+    <div>
+      <div class="section-label" style="color: var(--accent-light);">Limited Early Access</div>
+      <h2 class="offer-title">Sign up today.<br><em>First month free.</em></h2>
+      <p class="offer-sub">We're building this for people who are serious about their next move. Early access means you shape the product — and get it free while you do.</p>
+    </div>
+
+    <div>
+      <ul class="offer-perks">
+        <li>
+          <span class="perk-icon">→</span>
+          <span><strong style="color:white;">Full product access, free for 30 days.</strong> No credit card required. No hidden conditions.</span>
+        </li>
+        <li>
+          <span class="perk-icon">→</span>
+          <span><strong style="color:white;">Unlimited tailored resumes</strong> during your trial — apply to as many roles as you want.</span>
+        </li>
+        <li>
+          <span class="perk-icon">→</span>
+          <span><strong style="color:white;">Early bird pricing locked in forever</strong> when we launch paid plans.</span>
+        </li>
+        <li>
+          <span class="perk-icon">→</span>
+          <span><strong style="color:white;">Direct line to the founder.</strong> Your feedback shapes what gets built next.</span>
+        </li>
+      </ul>
+
+      <form class="offer-form" id="offerForm" onsubmit="handleSubmit(event, 'offerSuccess')">
+        <input type="text" placeholder="Your name" required />
+        <input type="email" placeholder="Your email address" required />
+        <button type="submit" class="btn-primary">Claim My Free Month →</button>
+        <p class="offer-note">Spots are limited. We're onboarding early users personally to make sure the product works for you.</p>
+      </form>
+      <div class="success-msg" id="offerSuccess" style="background: rgba(74,222,128,0.08); border-color: #4ade80; color: #4ade80;">
+        ✓ You're in. We'll be in touch within 24 hours with your access link.
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">Land<span>The</span>Interview</div>
+    <div class="footer-links">
+      <a href="https://linkedin.com" target="_blank">LinkedIn</a>
+      <a href="mailto:hello@landtheinterview.com">Contact</a>
+    </div>
+    <div class="footer-copy">© 2026 LandTheInterview. Built with care.</div>
+  </footer>
+
+  <script>
+    // ── MOCK UI ANIMATION ──────────────────────────────────────────────
+    const jdText = "Senior Product Manager — B2B SaaS\n\nWe're looking for a strategic PM with experience in growth metrics, stakeholder management, and product-led growth...";
+    let charIndex = 0;
+    let animTimeout;
+
+    function typeText() {
+      const el = document.getElementById('typing-text');
+      if (!el) return;
+      if (charIndex < jdText.length) {
+        el.innerHTML = jdText.slice(0, charIndex).replace(/\n/g, '<br>') + '<span class="cursor"></span>';
+        charIndex++;
+        animTimeout = setTimeout(typeText, charIndex < 36 ? 45 : 18);
+      } else {
+        el.innerHTML = jdText.replace(/\n/g, '<br>');
+        setTimeout(showProcessing, 600);
+      }
+    }
+
+    function showProcessing() {
+      document.getElementById('phase-input').style.display = 'none';
+      document.getElementById('pill1').className = 'mock-step-pill done';
+      document.getElementById('pill2').className = 'mock-step-pill done';
+      document.getElementById('pill3').className = 'mock-step-pill active';
+
+      const proc = document.getElementById('phase-processing');
+      proc.style.display = 'block';
+
+      // Step through processing states
+      setTimeout(() => {
+        document.getElementById('proc-dot-2').className = 'processing-dot p-done';
+        document.getElementById('proc-text-2').className = 'p-text-done';
+        document.getElementById('proc-dot-3').className = 'processing-dot p-active';
+        document.getElementById('proc-text-3').className = 'p-text-active';
+      }, 900);
+
+      setTimeout(() => {
+        document.getElementById('proc-dot-3').className = 'processing-dot p-done';
+        document.getElementById('proc-text-3').className = 'p-text-done';
+        document.getElementById('proc-dot-4').className = 'processing-dot p-active';
+        document.getElementById('proc-text-4').className = 'p-text-active';
+      }, 1900);
+
+      setTimeout(showResults, 3000);
+    }
+
+    function showResults() {
+      document.getElementById('phase-processing').style.display = 'none';
+      const results = document.getElementById('phase-results');
+      results.style.display = 'block';
+
+      // Animate score counter
+      let score = 0;
+      const target = 87;
+      const counter = document.getElementById('score-counter');
+      const circle = document.getElementById('score-circle');
+      const circumference = 138.2;
+
+      const scoreInterval = setInterval(() => {
+        score++;
+        counter.textContent = score + '%';
+        const offset = circumference - (score / 100) * circumference;
+        circle.style.strokeDashoffset = offset;
+        if (score >= target) clearInterval(scoreInterval);
+      }, 18);
+
+      // Loop back after showing results
+      setTimeout(restartAnimation, 5000);
+    }
+
+    function restartAnimation() {
+      clearTimeout(animTimeout);
+      charIndex = 0;
+
+      document.getElementById('phase-results').style.display = 'none';
+      document.getElementById('phase-processing').style.display = 'none';
+      document.getElementById('phase-input').style.display = 'block';
+      document.getElementById('pill1').className = 'mock-step-pill done';
+      document.getElementById('pill2').className = 'mock-step-pill active';
+      document.getElementById('pill3').className = 'mock-step-pill wait';
+
+      // Reset score circle
+      const circle = document.getElementById('score-circle');
+      if (circle) circle.style.strokeDashoffset = '138.2';
+
+      setTimeout(typeText, 400);
+    }
+
+    // Start animation after short delay
+    setTimeout(typeText, 1200);
+
+    // ── WAITLIST COUNTER TICK ──────────────────────────────────────────
+    let baseCount = 4000;
+    function tickCount() {
+      const el = document.getElementById('waitlist-count');
+      if (!el) return;
+      const add = Math.floor(Math.random() * 3);
+      if (add > 0) {
+        baseCount += add;
+        el.textContent = baseCount.toLocaleString('en-IN') + '+';
+      }
+      setTimeout(tickCount, Math.random() * 8000 + 4000);
+    }
+    setTimeout(tickCount, 5000);
+
+    // ── FORM HANDLERS ──────────────────────────────────────────────────
+    function handleSubmit(e, successId) {
+      e.preventDefault();
+      const form = e.target;
+      const successEl = document.getElementById(successId);
+      const inputs = form.querySelectorAll('input');
+      const data = {};
+      inputs.forEach(input => { data[input.type] = input.value; });
+      console.log('Signup:', data);
+      form.style.display = 'none';
+      successEl.style.display = 'block';
+
+      // Tick count up on signup
+      baseCount += 1;
+      const countEl = document.getElementById('waitlist-count');
+      if (countEl) countEl.textContent = baseCount.toLocaleString('en-IN') + '+';
+    }
+
+    // ── SMOOTH SCROLL ──────────────────────────────────────────────────
+    document.querySelector('.nav-cta').addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById('early-access').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    // ── STEP ANIMATIONS ───────────────────────────────────────────────
+    const steps = document.querySelectorAll('.step');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          entry.target.style.animation = `fadeUp 0.6s ease ${i * 0.1}s both`;
+        }
+      });
+    }, { threshold: 0.2 });
+    steps.forEach(step => observer.observe(step));
+  </script>
+</body>
+</html>
