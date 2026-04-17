@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LandTheInterview — Your resume isn't the problem. The mismatch is.</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://sibforms.com/forms/end-form/build/sib-styles.css">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -850,6 +851,65 @@
 
 
 
+    .tally-container {
+      max-width: 420px;
+      width: 100%;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .tally-container iframe {
+      display: block;
+      border: none;
+      width: 100%;
+    }
+
+    /* Dark section — invert Tally so it reads on black bg */
+    .tally-container-dark iframe {
+      filter: invert(1) hue-rotate(180deg) brightness(0.9);
+    }
+
+    .brevo-wrap {
+      max-width: 420px;
+      width: 100%;
+      margin-top: 4px;
+    }
+
+    .brevo-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .brevo-input {
+      flex: 1;
+      padding: 16px 20px;
+      border: 1.5px solid rgba(0,0,0,0.12);
+      background: white;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.92rem;
+      color: var(--black);
+      outline: none;
+      transition: border-color 0.2s;
+      border-radius: 2px;
+      width: 100%;
+    }
+
+    .brevo-input:focus { border-color: var(--accent); }
+    .brevo-input::placeholder { color: #b0a898; }
+
+    .brevo-input-dark {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(255,255,255,0.12);
+      color: white;
+    }
+
+    .brevo-input-dark::placeholder { color: rgba(255,255,255,0.3); }
+    .brevo-input-dark:focus { border-color: var(--accent-light); }
+
+    /* Kill all Brevo default styles */
+    .sib-form, .sib-form-container, #sib-container { all: unset !important; display: block !important; }
+
     /* RESPONSIVE */
     @media (max-width: 900px) {
       nav { padding: 20px 24px; }
@@ -883,17 +943,19 @@
         Paste any job description. Upload your CV. Get a perfectly tailored resume in seconds — written in the exact language the hiring manager is looking for.
       </p>
 
-      <form class="signup-form" id="heroForm" onsubmit="handleSubmit(event, 'heroSuccess')">
-        <div class="form-row">
-          <input type="email" id="heroEmail" placeholder="Your email address" required />
-          <button type="submit" class="btn-primary">Get Early Access</button>
+      <div class="brevo-wrap" id="heroBrevo">
+        <form id="sib-form-hero" method="POST" action="https://a91b6fcb.sibforms.com/serve/MUIFALyGFg-8rqURwAhXJGP-x2Gj3olXZCpB1rrgK3McOJ07KOIEsROgtx1jr-BG9NcGVk6XN2GBRYw_svDd1tYmw_DrNqKiVWZZnTNBc07ib9mEl0lXAyJI3Rr4F3EjqPA68MrHxT9eiHl9aVvi42whxgBK1XdVItKed0X1FYycd7i8o75-sgi-_7h4EsePHUK8VJXMYGIaw8LV9A==" data-type="subscription">
+          <div class="brevo-row">
+            <input class="brevo-input" type="email" id="EMAIL-hero" name="EMAIL" autocomplete="off" placeholder="Your email address" data-required="true" required />
+            <button class="btn-primary" type="submit">Get Early Access</button>
+          </div>
+          <p class="form-note"><strong>Free for 1 month.</strong> No credit card. No commitment. Limited spots only.</p>
+          <input type="text" name="email_address_check" value="" style="display:none;">
+          <input type="hidden" name="locale" value="en">
+        </form>
+        <div id="hero-success" class="success-msg" style="display:none;">
+          🎉 You're on the list. We'll reach out with early access shortly.
         </div>
-        <p class="form-note">
-          <strong>Free for 1 month.</strong> No credit card. No commitment. Limited spots only.
-        </p>
-      </form>
-      <div class="success-msg" id="heroSuccess">
-        🎉 You're on the list. We'll reach out with early access shortly.
       </div>
 
       <!-- SOCIAL PROOF -->
@@ -1077,14 +1139,17 @@
         </li>
       </ul>
 
-      <form class="offer-form" id="offerForm" onsubmit="handleSubmit(event, 'offerSuccess')">
-        <input type="text" id="offerName" placeholder="Your name" required />
-        <input type="email" id="offerEmail" placeholder="Your email address" required />
-        <button type="submit" class="btn-primary">Claim My Free Month →</button>
-        <p class="offer-note">Spots are limited. We're onboarding early users personally.</p>
-      </form>
-      <div class="success-msg" id="offerSuccess" style="background: rgba(74,222,128,0.08); border-color: #4ade80; color: #4ade80;">
-        ✓ You're in. We'll be in touch within 24 hours with your access link.
+      <div class="brevo-wrap" id="offerBrevo">
+        <form id="sib-form-offer" method="POST" action="https://a91b6fcb.sibforms.com/serve/MUIFALyGFg-8rqURwAhXJGP-x2Gj3olXZCpB1rrgK3McOJ07KOIEsROgtx1jr-BG9NcGVk6XN2GBRYw_svDd1tYmw_DrNqKiVWZZnTNBc07ib9mEl0lXAyJI3Rr4F3EjqPA68MrHxT9eiHl9aVvi42whxgBK1XdVItKed0X1FYycd7i8o75-sgi-_7h4EsePHUK8VJXMYGIaw8LV9A==" data-type="subscription">
+          <input class="brevo-input brevo-input-dark" type="email" id="EMAIL-offer" name="EMAIL" autocomplete="off" placeholder="Your email address" data-required="true" required />
+          <button class="btn-primary" type="submit" style="width:100%; margin-top:8px;">Claim My Free Month →</button>
+          <p class="offer-note" style="margin-top:10px;">Spots are limited. We're onboarding early users personally.</p>
+          <input type="text" name="email_address_check" value="" style="display:none;">
+          <input type="hidden" name="locale" value="en">
+        </form>
+        <div id="offer-success" class="success-msg" style="display:none; background:rgba(74,222,128,0.08); border-color:#4ade80; color:#4ade80;">
+          ✓ You're in. We'll be in touch within 24 hours with your access link.
+        </div>
       </div>
     </div>
   </section>
@@ -1204,32 +1269,39 @@
     }
     setTimeout(tickCount, 5000);
 
-    // ── FORM HANDLERS ──────────────────────────────────────────────────
-    function handleSubmit(e, successId) {
-      e.preventDefault();
-      const form = e.target;
-      const successEl = document.getElementById(successId);
+    // ── BREVO FORM HANDLERS ────────────────────────────────────────────
+    function handleBrevoSubmit(formEl, successId) {
+      const email = formEl.querySelector('input[type="email"]').value;
+      if (!email) return;
 
-      // Open Tally form in background with prefilled email
-      const email = form.querySelector('input[type="email"]')?.value || '';
-      const name = form.querySelector('input[type="text"]')?.value || '';
-      const tallyUrl = `https://tally.so/r/NpBLgG?email=${encodeURIComponent(email)}&name=${encodeURIComponent(name)}`;
-      
-      // Silent background submission via hidden iframe
-      const ghost = document.createElement('iframe');
-      ghost.style.display = 'none';
-      ghost.src = tallyUrl;
-      document.body.appendChild(ghost);
-      setTimeout(() => ghost.remove(), 3000);
+      const formData = new FormData(formEl);
 
-      form.style.display = 'none';
-      successEl.style.display = 'block';
-
-      // Tick waitlist count
-      baseCount += 1;
-      const countEl = document.getElementById('waitlist-count');
-      if (countEl) countEl.textContent = baseCount.toLocaleString('en-IN') + '+';
+      fetch(formEl.action, {
+        method: 'POST',
+        body: formData,
+        mode: 'no-cors'
+      }).then(() => {
+        formEl.style.display = 'none';
+        document.getElementById(successId).style.display = 'block';
+        baseCount += 1;
+        const countEl = document.getElementById('waitlist-count');
+        if (countEl) countEl.textContent = baseCount.toLocaleString('en-IN') + '+';
+      }).catch(() => {
+        // no-cors won't throw — this is a fallback
+        formEl.style.display = 'none';
+        document.getElementById(successId).style.display = 'block';
+      });
     }
+
+    document.getElementById('sib-form-hero').addEventListener('submit', function(e) {
+      e.preventDefault();
+      handleBrevoSubmit(this, 'hero-success');
+    });
+
+    document.getElementById('sib-form-offer').addEventListener('submit', function(e) {
+      e.preventDefault();
+      handleBrevoSubmit(this, 'offer-success');
+    });
 
     // ── SMOOTH SCROLL ──────────────────────────────────────────────────
     document.querySelector('.nav-cta').addEventListener('click', (e) => {
@@ -1248,6 +1320,15 @@
     }, { threshold: 0.2 });
     steps.forEach(step => observer.observe(step));
   </script>
-  <script>var d=document,w="https://tally.so/widgets/embed.js",v=function(){"undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach((function(e){e.src=e.dataset.tallySrc}))};if("undefined"!=typeof Tally)v();else if(d.querySelector('script[src="'+w+'"]')==null){var s=d.createElement("script");s.src=w,s.onload=v,s.onerror=v,d.body.appendChild(s);}</script>
+  <script>
+    window.REQUIRED_CODE_ERROR_MESSAGE = 'Please choose a country code';
+    window.LOCALE = 'en';
+    window.EMAIL_INVALID_MESSAGE = "The information provided is invalid. Please review the field format and try again.";
+    window.REQUIRED_ERROR_MESSAGE = "This field cannot be left blank.";
+    window.GENERIC_INVALID_MESSAGE = "The information provided is invalid. Please review the field format and try again.";
+    window.translation = { common: { selectedList: '{quantity} list selected', selectedLists: '{quantity} lists selected' } };
+    var AUTOHIDE = Boolean(0);
+  </script>
+  <script defer src="https://sibforms.com/forms/end-form/build/main.js"></script>
 </body>
 </html>
