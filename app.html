@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LandTheInterview — Tailor Your Resume</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0a0a0a;
+      --off-white: #f5f2ec;
+      --cream: #ede9e0;
+      --accent: #c84b2f;
+      --accent-light: #e8673e;
+      --muted: #7a7060;
+      --border: rgba(0,0,0,0.1);
+      --white: #ffffff;
+      --green: #16a34a;
+      --green-bg: #f0fdf4;
+      --orange: #d97706;
+      --orange-bg: #fffbeb;
+      --red: #dc2626;
+      --red-bg: #fef2f2;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--off-white);
+      color: var(--black);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 16px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(245,242,236,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-weight: 900;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+      color: var(--black);
+      text-decoration: none;
+    }
+
+    .logo span { color: var(--accent); }
+
+    .nav-badge {
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--accent);
+      background: rgba(200,75,47,0.08);
+      border: 1px solid rgba(200,75,47,0.2);
+      padding: 4px 12px;
+      border-radius: 100px;
+      letter-spacing: 0.04em;
+    }
+
+    /* MAIN LAYOUT */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+
+    .page-sub {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 40px;
+    }
+
+    /* STEPS BAR */
+    .steps-bar {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 40px;
+      background: white;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .step-item {
+      flex: 1;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.82rem;
+      font-weight: 400;
+      color: var(--muted);
+      border-right: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+
+    .step-item:last-child { border-right: none; }
+
+    .step-item.active {
+      background: var(--black);
+      color: white;
+    }
+
+    .step-item.done {
+      background: var(--green-bg);
+      color: var(--green);
+    }
+
+    .step-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 600;
+      background: rgba(0,0,0,0.08);
+      color: inherit;
+      flex-shrink: 0;
+    }
+
+    .step-item.active .step-num { background: var(--accent); color: white; }
+    .step-item.done .step-num { background: var(--green); color: white; }
+
+    /* INPUT GRID */
+    .input-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--black);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title-icon {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .card-body { padding: 20px; }
+
+    /* CV UPLOAD */
+    .upload-zone {
+      border: 2px dashed rgba(0,0,0,0.12);
+      border-radius: 4px;
+      padding: 36px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .upload-zone:hover, .upload-zone.dragover {
+      border-color: var(--accent);
+      background: rgba(200,75,47,0.03);
+    }
+
+    .upload-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .upload-icon {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .upload-text {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .upload-text strong { color: var(--black); }
+
+    .upload-success {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: var(--green-bg);
+      border: 1px solid rgba(22,163,74,0.2);
+      border-radius: 4px;
+      font-size: 0.85rem;
+      color: var(--green);
+    }
+
+    .upload-success.show { display: flex; }
+
+    /* JD TEXTAREA */
+    textarea {
+      width: 100%;
+      min-height: 220px;
+      padding: 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 4px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      line-height: 1.6;
+      color: var(--black);
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s;
+      background: var(--off-white);
+    }
+
+    textarea:focus { border-color: var(--accent); background: white; }
+    textarea::placeholder { color: #b0a898; }
+
+    .char-count {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 6px;
+      text-align: right;
+    }
+
+    /* EMAIL GATE */
+    .email-gate {
+      display: none;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 28px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .email-gate.show { display: block; }
+
+    .email-gate h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .email-gate p {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .email-row {
+      display: flex;
+      gap: 10px;
+      max-width: 440px;
+      margin: 0 auto;
+    }
+
+    .email-input {
+      flex: 1;
+      padding: 13px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 4px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .email-input:focus { border-color: var(--accent); }
+    .email-input::placeholder { color: #b0a898; }
+
+    /* BUTTONS */
+    .btn-primary {
+      padding: 14px 28px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    .btn-primary:hover { background: var(--accent-light); transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .btn-secondary {
+      padding: 12px 24px;
+      background: transparent;
+      color: var(--black);
+      border: 1.5px solid var(--border);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 400;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-radius: 4px;
+    }
+
+    .btn-secondary:hover { border-color: var(--black); }
+
+    /* TAILOR BUTTON */
+    .tailor-row {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 32px;
+    }
+
+    .btn-tailor {
+      padding: 18px 56px;
+      background: var(--black);
+      color: white;
+      border: none;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      font-style: italic;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-radius: 4px;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-tailor:hover { background: #1a1a1a; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+    .btn-tailor:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    /* LOADING */
+    .loading {
+      display: none;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 48px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .loading.show { display: block; }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--cream);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 20px;
+    }
+
+    .loading-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .loading-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-width: 280px;
+      margin: 20px auto 0;
+    }
+
+    .loading-step {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-align: left;
+    }
+
+    .loading-step.active { color: var(--black); font-weight: 500; }
+    .loading-step.done { color: var(--green); }
+
+    .lstep-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cream);
+      flex-shrink: 0;
+    }
+
+    .loading-step.active .lstep-dot { background: var(--accent); animation: pulse 0.8s ease-in-out infinite; }
+    .loading-step.done .lstep-dot { background: var(--green); }
+
+    /* RESULTS */
+    .results {
+      display: none;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .results.show { display: block; }
+
+    .results-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .results-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 900;
+    }
+
+    /* SCORE SECTION */
+    .score-grid {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 20px;
+      background: var(--black);
+      color: white;
+      border-radius: 6px;
+      padding: 28px 32px;
+      margin-bottom: 20px;
+      align-items: center;
+    }
+
+    .score-big {
+      font-family: 'Playfair Display', serif;
+      font-size: 4rem;
+      font-weight: 900;
+      color: #4ade80;
+      line-height: 1;
+    }
+
+    .score-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 4px;
+    }
+
+    .score-bar-wrap {
+      height: 6px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 3px;
+      overflow: hidden;
+      margin: 8px 0;
+    }
+
+    .score-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #4ade80, #22c55e);
+      border-radius: 3px;
+      transition: width 1.5s ease;
+      width: 0%;
+    }
+
+    .better-than {
+      text-align: center;
+      padding: 0 20px;
+      border-left: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .better-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 900;
+      color: #4ade80;
+    }
+
+    .better-label {
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.35);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      line-height: 1.4;
+    }
+
+    .improvements {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .improvement-item {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.6);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.4;
+    }
+
+    .improvement-item::before {
+      content: '✦';
+      color: var(--accent-light);
+      flex-shrink: 0;
+      font-size: 0.6rem;
+      margin-top: 2px;
+    }
+
+    /* KEYWORDS */
+    .keywords-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .keywords-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .keywords-groups {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .kw-group-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .kw-group-label.matched { color: var(--green); }
+    .kw-group-label.partial { color: var(--orange); }
+    .kw-group-label.missing { color: var(--red); }
+
+    .kw-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .kw-tag {
+      padding: 4px 10px;
+      border-radius: 3px;
+      font-size: 0.72rem;
+      font-weight: 400;
+    }
+
+    .kw-tag.matched { background: var(--green-bg); color: var(--green); border: 1px solid rgba(22,163,74,0.15); }
+    .kw-tag.partial { background: var(--orange-bg); color: var(--orange); border: 1px solid rgba(217,119,6,0.15); }
+    .kw-tag.missing { background: var(--red-bg); color: var(--red); border: 1px solid rgba(220,38,38,0.15); }
+
+    /* CV OUTPUT */
+    .cv-output-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .cv-output-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .cv-output-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cv-badge {
+      background: var(--green-bg);
+      color: var(--green);
+      border: 1px solid rgba(22,163,74,0.2);
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .cv-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .cv-output-body {
+      padding: 28px;
+      font-size: 0.88rem;
+      line-height: 1.8;
+      color: var(--black);
+      white-space: pre-wrap;
+      font-family: 'DM Sans', sans-serif;
+      max-height: 600px;
+      overflow-y: auto;
+      background: #fafaf8;
+    }
+
+    .cv-output-body::-webkit-scrollbar { width: 4px; }
+    .cv-output-body::-webkit-scrollbar-track { background: transparent; }
+    .cv-output-body::-webkit-scrollbar-thumb { background: var(--cream); border-radius: 2px; }
+
+    /* COPY TOAST */
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--black);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: transform 0.3s ease;
+      z-index: 1000;
+      pointer-events: none;
+    }
+
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ERROR */
+    .error-msg {
+      display: none;
+      background: var(--red-bg);
+      border: 1px solid rgba(220,38,38,0.2);
+      border-radius: 4px;
+      padding: 14px 18px;
+      font-size: 0.88rem;
+      color: var(--red);
+      margin-bottom: 16px;
+    }
+
+    .error-msg.show { display: block; }
+
+    /* ANIMATIONS */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.3); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 14px 20px; }
+      .container { padding: 24px 16px 60px; }
+      .input-grid { grid-template-columns: 1fr; }
+      .score-grid { grid-template-columns: 1fr; gap: 16px; }
+      .better-than { border-left: none; border-top: 1px solid rgba(255,255,255,0.08); padding: 16px 0 0; }
+      .keywords-groups { grid-template-columns: 1fr; }
+      .steps-bar { display: none; }
+      .email-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="logo">Land<span>The</span>Interview</a>
+    <div class="nav-badge">Free Early Access</div>
+  </nav>
+
+  <div class="container">
+    <h1 class="page-title">Tailor Your Resume</h1>
+    <p class="page-sub">Upload your CV and paste the job description — we'll rewrite your resume in the hiring manager's language.</p>
+
+    <!-- STEPS BAR -->
+    <div class="steps-bar">
+      <div class="step-item active" id="step1">
+        <div class="step-num">1</div>
+        Upload CV & Paste JD
+      </div>
+      <div class="step-item" id="step2">
+        <div class="step-num">2</div>
+        Unlock Results
+      </div>
+      <div class="step-item" id="step3">
+        <div class="step-num">3</div>
+        Copy & Apply
+      </div>
+    </div>
+
+    <!-- INPUT SECTION -->
+    <div id="inputSection">
+      <div class="input-grid">
+
+        <!-- CV UPLOAD -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <div class="card-title-icon"></div>
+              Your CV
+            </div>
+            <span style="font-size:0.72rem; color:var(--muted);">PDF or Word</span>
+          </div>
+          <div class="card-body">
+            <div class="upload-zone" id="uploadZone">
+              <input type="file" id="cvFile" accept=".pdf,.docx,.txt" />
+              <span class="upload-icon">📄</span>
+              <div class="upload-text">
+                <strong>Click to upload</strong> or drag & drop<br>
+                PDF, Word (.docx), or text file
+              </div>
+            </div>
+            <div class="upload-success" id="uploadSuccess">
+              <span>✓</span>
+              <span id="uploadFileName">Resume uploaded</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- JD INPUT -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <div class="card-title-icon"></div>
+              Job Description
+            </div>
+            <span style="font-size:0.72rem; color:var(--muted);">Paste the full JD</span>
+          </div>
+          <div class="card-body">
+            <textarea
+              id="jdText"
+              placeholder="Paste the full job description here...
+
+Include the role title, responsibilities, required skills, and qualifications for best results."
+              oninput="updateCharCount()"
+            ></textarea>
+            <div class="char-count" id="charCount">0 characters</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ERROR -->
+      <div class="error-msg" id="errorMsg"></div>
+
+      <!-- TAILOR BUTTON -->
+      <div class="tailor-row">
+        <button class="btn-tailor" id="tailorBtn" onclick="startTailoring()">
+          Tailor My Resume →
+        </button>
+      </div>
+    </div>
+
+    <!-- EMAIL GATE -->
+    <div class="email-gate" id="emailGate">
+      <h3>Your tailored resume is ready 🎉</h3>
+      <p>Enter your email to unlock your results — free for 30 days, no credit card.</p>
+      <div class="email-row">
+        <input type="email" class="email-input" id="gateEmail" placeholder="Your email address" />
+        <button class="btn-primary" onclick="unlockResults()">Unlock Results</button>
+      </div>
+    </div>
+
+    <!-- LOADING -->
+    <div class="loading" id="loadingSection">
+      <div class="loading-spinner"></div>
+      <div class="loading-title">Tailoring your resume...</div>
+      <p style="font-size:0.85rem; color:var(--muted);">This takes about 15–20 seconds</p>
+      <div class="loading-steps">
+        <div class="loading-step active" id="lstep1">
+          <div class="lstep-dot"></div>
+          Reading your CV
+        </div>
+        <div class="loading-step" id="lstep2">
+          <div class="lstep-dot"></div>
+          Analysing job description
+        </div>
+        <div class="loading-step" id="lstep3">
+          <div class="lstep-dot"></div>
+          Matching keywords & skills
+        </div>
+        <div class="loading-step" id="lstep4">
+          <div class="lstep-dot"></div>
+          Rewriting in JD language
+        </div>
+        <div class="loading-step" id="lstep5">
+          <div class="lstep-dot"></div>
+          Calculating match score
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="results" id="resultsSection">
+      <div class="results-header">
+        <div class="results-title">Your Tailored Resume</div>
+        <button class="btn-secondary" onclick="resetForm()">← Start Over</button>
+      </div>
+
+      <!-- SCORE -->
+      <div class="score-grid">
+        <div>
+          <div class="score-label">Match Score</div>
+          <div class="score-big" id="scoreNum">0%</div>
+          <div class="score-bar-wrap">
+            <div class="score-bar" id="scoreBar"></div>
+          </div>
+        </div>
+        <div class="improvements" id="improvementsList"></div>
+        <div class="better-than">
+          <div class="better-num" id="betterNum">—</div>
+          <div class="better-label">better than<br>other applicants</div>
+        </div>
+      </div>
+
+      <!-- KEYWORDS -->
+      <div class="keywords-card">
+        <div class="keywords-title">Keyword Analysis</div>
+        <div class="keywords-groups">
+          <div>
+            <div class="kw-group-label matched">✓ Matched</div>
+            <div class="kw-tags" id="matchedTags"></div>
+          </div>
+          <div>
+            <div class="kw-group-label partial">~ Partial</div>
+            <div class="kw-tags" id="partialTags"></div>
+          </div>
+          <div>
+            <div class="kw-group-label missing">✗ Missing</div>
+            <div class="kw-tags" id="missingTags"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAILORED CV OUTPUT -->
+      <div class="cv-output-card">
+        <div class="cv-output-header">
+          <div class="cv-output-title">
+            Tailored Resume
+            <span class="cv-badge">AI Rewritten</span>
+          </div>
+          <div class="cv-actions">
+            <button class="btn-secondary" onclick="copyCV()" style="font-size:0.8rem; padding:8px 16px;">Copy to Clipboard</button>
+          </div>
+        </div>
+        <div class="cv-output-body" id="cvOutput"></div>
+      </div>
+
+      <div style="text-align:center; padding: 12px; background: white; border: 1px solid var(--border); border-radius:6px; font-size:0.82rem; color:var(--muted);">
+        📥 <strong style="color:var(--black);">Download as PDF</strong> — coming soon. Copy and paste into Word or Google Docs for now.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast">Copied to clipboard ✓</div>
+
+  <script>
+    let cvFile = null;
+    let tailoredResult = null;
+    let processingDone = false;
+
+    // ── FILE UPLOAD ───────────────────────────────────────────────────
+    const cvFileInput = document.getElementById('cvFile');
+    const uploadZone = document.getElementById('uploadZone');
+
+    cvFileInput.addEventListener('change', function() {
+      if (this.files[0]) handleFile(this.files[0]);
+    });
+
+    uploadZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadZone.classList.add('dragover');
+    });
+
+    uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+
+    uploadZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadZone.classList.remove('dragover');
+      if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+    });
+
+    function handleFile(file) {
+      const allowed = ['.pdf', '.docx', '.txt'];
+      const ext = '.' + file.name.split('.').pop().toLowerCase();
+      if (!allowed.includes(ext)) {
+        showError('Please upload a PDF, Word (.docx), or text file.');
+        return;
+      }
+      cvFile = file;
+      document.getElementById('uploadZone').style.display = 'none';
+      const success = document.getElementById('uploadSuccess');
+      success.classList.add('show');
+      document.getElementById('uploadFileName').textContent = '✓ ' + file.name;
+    }
+
+    // ── CHAR COUNT ────────────────────────────────────────────────────
+    function updateCharCount() {
+      const len = document.getElementById('jdText').value.length;
+      document.getElementById('charCount').textContent = len + ' characters' + (len < 50 ? ' (minimum 50)' : '');
+    }
+
+    // ── START TAILORING ───────────────────────────────────────────────
+    function startTailoring() {
+      const jd = document.getElementById('jdText').value.trim();
+
+      if (!cvFile) { showError('Please upload your CV first.'); return; }
+      if (jd.length < 50) { showError('Please paste the full job description (minimum 50 characters).'); return; }
+
+      hideError();
+
+      // Show email gate first
+      document.getElementById('inputSection').style.display = 'none';
+      document.getElementById('emailGate').classList.add('show');
+
+      // Start processing in background
+      processInBackground();
+    }
+
+    // ── BACKGROUND PROCESSING ─────────────────────────────────────────
+    async function processInBackground() {
+      const jd = document.getElementById('jdText').value.trim();
+      const formData = new FormData();
+      formData.append('cv', cvFile);
+      formData.append('jd', jd);
+
+      try {
+        const response = await fetch('/api/tailor', {
+          method: 'POST',
+          body: formData
+        });
+        const result = await response.json();
+        if (result.success) {
+          tailoredResult = result.data;
+          processingDone = true;
+          // If user already entered email, show results
+          if (document.getElementById('resultsSection').classList.contains('show') === false
+              && document.getElementById('loadingSection').classList.contains('show')) {
+            showResults();
+          }
+        } else {
+          tailoredResult = { error: result.error };
+          processingDone = true;
+        }
+      } catch (e) {
+        tailoredResult = { error: 'Something went wrong. Please try again.' };
+        processingDone = true;
+      }
+    }
+
+    // ── UNLOCK RESULTS ────────────────────────────────────────────────
+    function unlockResults() {
+      const email = document.getElementById('gateEmail').value.trim();
+      if (!email || !email.includes('@')) {
+        document.getElementById('gateEmail').style.borderColor = 'var(--red)';
+        return;
+      }
+
+      // Store email
+      localStorage.setItem('lti_email', email);
+
+      // Submit to Brevo
+      submitToBrevo(email);
+
+      // Hide gate, show loading
+      document.getElementById('emailGate').classList.remove('show');
+      document.getElementById('loadingSection').classList.add('show');
+
+      // Update step bar
+      setStep(2);
+
+      // Animate loading steps
+      animateLoadingSteps();
+
+      // Check if processing already done
+      checkAndShowResults();
+    }
+
+    function checkAndShowResults() {
+      if (processingDone) {
+        setTimeout(showResults, 800);
+      } else {
+        const interval = setInterval(() => {
+          if (processingDone) {
+            clearInterval(interval);
+            showResults();
+          }
+        }, 500);
+      }
+    }
+
+    // ── LOADING ANIMATION ─────────────────────────────────────────────
+    function animateLoadingSteps() {
+      const steps = ['lstep1','lstep2','lstep3','lstep4','lstep5'];
+      let current = 0;
+
+      const next = () => {
+        if (current > 0) {
+          document.getElementById(steps[current-1]).classList.remove('active');
+          document.getElementById(steps[current-1]).classList.add('done');
+        }
+        if (current < steps.length) {
+          document.getElementById(steps[current]).classList.add('active');
+          current++;
+          if (current < steps.length) setTimeout(next, 3500);
+        }
+      };
+      next();
+    }
+
+    // ── SHOW RESULTS ──────────────────────────────────────────────────
+    function showResults() {
+      document.getElementById('loadingSection').classList.remove('show');
+
+      if (tailoredResult?.error) {
+        document.getElementById('inputSection').style.display = 'block';
+        showError(tailoredResult.error);
+        return;
+      }
+
+      const data = tailoredResult;
+
+      // Score
+      const score = Math.min(Math.max(data.score || 75, 20), 98);
+      const betterThan = data.better_than || Math.round(score * 0.9);
+
+      document.getElementById('resultsSection').classList.add('show');
+      setStep(3);
+
+      // Animate score
+      let current = 0;
+      const scoreEl = document.getElementById('scoreNum');
+      const barEl = document.getElementById('scoreBar');
+      const interval = setInterval(() => {
+        current++;
+        scoreEl.textContent = current + '%';
+        barEl.style.width = current + '%';
+        if (current >= score) clearInterval(interval);
+      }, 15);
+
+      document.getElementById('betterNum').textContent = betterThan + '%';
+
+      // Improvements
+      const improvements = data.improvements || [];
+      document.getElementById('improvementsList').innerHTML = improvements
+        .map(i => `<div class="improvement-item">${i}</div>`)
+        .join('');
+
+      // Keywords
+      renderTags('matchedTags', data.keywords?.matched || [], 'matched');
+      renderTags('partialTags', data.keywords?.partial || [], 'partial');
+      renderTags('missingTags', data.keywords?.missing || [], 'missing');
+
+      // CV Output
+      document.getElementById('cvOutput').textContent = data.tailored_cv || '';
+
+      // Scroll to results
+      setTimeout(() => {
+        document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 200);
+    }
+
+    function renderTags(containerId, tags, type) {
+      const container = document.getElementById(containerId);
+      if (!tags.length) {
+        container.innerHTML = '<span style="font-size:0.72rem; color:var(--muted);">None found</span>';
+        return;
+      }
+      container.innerHTML = tags.slice(0, 8)
+        .map(t => `<span class="kw-tag ${type}">${t}</span>`)
+        .join('');
+    }
+
+    // ── COPY CV ───────────────────────────────────────────────────────
+    function copyCV() {
+      const text = document.getElementById('cvOutput').textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2500);
+      });
+    }
+
+    // ── RESET ─────────────────────────────────────────────────────────
+    function resetForm() {
+      cvFile = null;
+      tailoredResult = null;
+      processingDone = false;
+
+      document.getElementById('inputSection').style.display = 'block';
+      document.getElementById('emailGate').classList.remove('show');
+      document.getElementById('loadingSection').classList.remove('show');
+      document.getElementById('resultsSection').classList.remove('show');
+      document.getElementById('uploadZone').style.display = 'block';
+      document.getElementById('uploadSuccess').classList.remove('show');
+      document.getElementById('jdText').value = '';
+      document.getElementById('charCount').textContent = '0 characters';
+      document.getElementById('cvFile').value = '';
+      document.getElementById('gateEmail').value = '';
+      hideError();
+      setStep(1);
+
+      // Reset loading steps
+      ['lstep1','lstep2','lstep3','lstep4','lstep5'].forEach((id, i) => {
+        const el = document.getElementById(id);
+        el.classList.remove('active', 'done');
+        if (i === 0) el.classList.add('active');
+      });
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ── STEP BAR ──────────────────────────────────────────────────────
+    function setStep(n) {
+      for (let i = 1; i <= 3; i++) {
+        const el = document.getElementById('step' + i);
+        el.classList.remove('active', 'done');
+        if (i < n) el.classList.add('done');
+        else if (i === n) el.classList.add('active');
+      }
+    }
+
+    // ── BREVO SUBMIT ──────────────────────────────────────────────────
+    function submitToBrevo(email) {
+      const formData = new FormData();
+      formData.append('EMAIL', email);
+      formData.append('email_address_check', '');
+      formData.append('locale', 'en');
+
+      fetch('https://a91b6fcb.sibforms.com/serve/MUIFALyGFg-8rqURwAhXJGP-x2Gj3olXZCpB1rrgK3McOJ07KOIEsROgtx1jr-BG9NcGVk6XN2GBRYw_svDd1tYmw_DrNqKiVWZZnTNBc07ib9mEl0lXAyJI3Rr4F3EjqPA68MrHxT9eiHl9aVvi42whxgBK1XdVItKed0X1FYycd7i8o75-sgi-_7h4EsePHUK8VJXMYGIaw8LV9A==', {
+        method: 'POST',
+        body: formData,
+        mode: 'no-cors'
+      }).catch(() => {});
+    }
+
+    // ── HELPERS ───────────────────────────────────────────────────────
+    function showError(msg) {
+      const el = document.getElementById('errorMsg');
+      el.textContent = msg;
+      el.classList.add('show');
+    }
+
+    function hideError() {
+      document.getElementById('errorMsg').classList.remove('show');
+    }
+
+    // Pre-fill email if already captured from landing page
+    const savedEmail = localStorage.getItem('lti_email');
+    if (savedEmail) {
+      document.getElementById('gateEmail').value = savedEmail;
+    }
+  </script>
+</body>
+</html>
