@@ -104,17 +104,35 @@ ${jd}
 
 Return ONLY the JSON. No preamble, no explanation, no markdown code blocks.`;
 
-    const geminiResponse = await axios.post(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`,
-      {
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: {
-          temperature: 0.7,
-          maxOutputTokens: 4000,
-        }
-      },
-      { headers: { 'Content-Type': 'application/json' }, timeout: 60000 }
-    );
+    const models = [
+      'gemini-1.5-flash-8b',
+      'gemini-1.5-pro',
+      'gemini-pro'
+    ];
+
+    let geminiResponse;
+    let lastError;
+
+    for (const model of models) {
+      try {
+        geminiResponse = await axios.post(
+          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+          {
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { temperature: 0.7, maxOutputTokens: 4000 }
+          },
+          { headers: { 'Content-Type': 'application/json' }, timeout: 60000 }
+        );
+        console.log(`Success with model: ${model}`);
+        break;
+      } catch (e) {
+        console.log(`Model ${model} failed:`, e.response?.data?.error?.message || e.message);
+        lastError = e;
+        continue;
+      }
+    }
+
+    if (!geminiResponse) throw lastError;
 
     const rawText = geminiResponse.data.candidates[0].content.parts[0].text;
     
