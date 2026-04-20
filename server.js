@@ -118,6 +118,9 @@ ${jd.slice(0, 8000)}`;
       text = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
     }
 
+    // Clean bad control characters that break JSON parsing
+    text = text.replace(/[\x00-\x09\x0B\x0C\x0E-\x1F\x7F]/g, ' ');
+
     let result;
     try {
       result = JSON.parse(text);
