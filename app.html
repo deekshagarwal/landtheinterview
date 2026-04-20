@@ -709,16 +709,58 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    /* 2-COLUMN RESULTS LAYOUT */
+    .results-grid {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .results-left {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: sticky;
+      top: 72px;
+    }
+
+    .results-right {
+      min-width: 0;
+    }
+
+    /* SCORE CARD V2 */
+    .score-card-v2 {
+      background: var(--black);
+      color: white;
+      border-radius: 6px;
+      padding: 20px;
+    }
+
+    .score-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    /* TALL CV OUTPUT */
+    .cv-output-body {
+      max-height: calc(100vh - 200px) !important;
+    }
+
     /* RESPONSIVE */
     @media (max-width: 768px) {
       nav { padding: 14px 20px; }
       .container { padding: 24px 16px 60px; }
       .input-grid { grid-template-columns: 1fr; }
-      .score-grid { grid-template-columns: 1fr; gap: 16px; }
-      .better-than { border-left: none; border-top: 1px solid rgba(255,255,255,0.08); padding: 16px 0 0; }
-      .keywords-groups { grid-template-columns: 1fr; }
       .steps-bar { display: none; }
       .email-row { flex-direction: column; }
+      .results-grid { grid-template-columns: 1fr; }
+      .results-left { position: static; }
+      .cv-output-body { max-height: 400px !important; }
     }
   </style>
 </head>
@@ -853,62 +895,77 @@ Include the role title, responsibilities, required skills, and qualifications fo
 
     <!-- RESULTS -->
     <div class="results" id="resultsSection">
+
+      <!-- RESULTS HEADER -->
       <div class="results-header">
         <div class="results-title">Your Tailored Resume</div>
         <button class="btn-secondary" onclick="resetForm()">← Start Over</button>
       </div>
 
-      <!-- SCORE -->
-      <div class="score-grid">
-        <div>
-          <div class="score-label">Match Score</div>
-          <div class="score-big" id="scoreNum">0%</div>
-          <div class="score-bar-wrap">
-            <div class="score-bar" id="scoreBar"></div>
-          </div>
-        </div>
-        <div class="improvements" id="improvementsList"></div>
-        <div class="better-than">
-          <div class="better-num" id="betterNum">—</div>
-          <div class="better-label">better than<br>other applicants</div>
-        </div>
-      </div>
+      <!-- 2 COLUMN LAYOUT -->
+      <div class="results-grid">
 
-      <!-- KEYWORDS -->
-      <div class="keywords-card">
-        <div class="keywords-title">Keyword Analysis</div>
-        <div class="keywords-groups">
-          <div>
-            <div class="kw-group-label matched">✓ Matched</div>
-            <div class="kw-tags" id="matchedTags"></div>
+        <!-- LEFT COLUMN: Score + Keywords + Improvements -->
+        <div class="results-left">
+
+          <!-- SCORE CARD -->
+          <div class="score-card-v2">
+            <div class="score-top">
+              <div>
+                <div class="score-label">Match Score</div>
+                <div class="score-big" id="scoreNum">0%</div>
+                <div class="score-bar-wrap">
+                  <div class="score-bar" id="scoreBar"></div>
+                </div>
+              </div>
+              <div class="better-than">
+                <div class="better-num" id="betterNum">—</div>
+                <div class="better-label">better than<br>applicants</div>
+              </div>
+            </div>
+            <div class="improvements" id="improvementsList"></div>
           </div>
-          <div>
-            <div class="kw-group-label partial">~ Partial</div>
-            <div class="kw-tags" id="partialTags"></div>
+
+          <!-- KEYWORDS -->
+          <div class="keywords-card">
+            <div class="keywords-title">Keyword Analysis</div>
+            <div class="kw-group" style="margin-bottom:12px;">
+              <div class="kw-group-label matched">✓ Matched</div>
+              <div class="kw-tags" id="matchedTags"></div>
+            </div>
+            <div class="kw-group" style="margin-bottom:12px;">
+              <div class="kw-group-label partial">~ Partial</div>
+              <div class="kw-tags" id="partialTags"></div>
+            </div>
+            <div class="kw-group">
+              <div class="kw-group-label missing">✗ Missing</div>
+              <div class="kw-tags" id="missingTags"></div>
+            </div>
           </div>
-          <div>
-            <div class="kw-group-label missing">✗ Missing</div>
-            <div class="kw-tags" id="missingTags"></div>
+
+          <!-- PDF NOTE -->
+          <div style="padding: 12px 16px; background: white; border: 1px solid var(--border); border-radius:6px; font-size:0.78rem; color:var(--muted); line-height:1.5;">
+            📥 <strong style="color:var(--black);">Download as PDF</strong> — coming soon. Copy and paste into Word or Google Docs for now.
+          </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN: Tailored CV -->
+        <div class="results-right">
+          <div class="cv-output-card">
+            <div class="cv-output-header">
+              <div class="cv-output-title">
+                Tailored Resume
+                <span class="cv-badge">AI Rewritten</span>
+              </div>
+              <div class="cv-actions">
+                <button class="btn-secondary" onclick="copyCV()" style="font-size:0.8rem; padding:8px 16px;">Copy to Clipboard</button>
+              </div>
+            </div>
+            <div class="cv-output-body" id="cvOutput"></div>
           </div>
         </div>
-      </div>
 
-      <!-- TAILORED CV OUTPUT -->
-      <div class="cv-output-card">
-        <div class="cv-output-header">
-          <div class="cv-output-title">
-            Tailored Resume
-            <span class="cv-badge">AI Rewritten</span>
-          </div>
-          <div class="cv-actions">
-            <button class="btn-secondary" onclick="copyCV()" style="font-size:0.8rem; padding:8px 16px;">Copy to Clipboard</button>
-          </div>
-        </div>
-        <div class="cv-output-body" id="cvOutput"></div>
-      </div>
-
-      <div style="text-align:center; padding: 12px; background: white; border: 1px solid var(--border); border-radius:6px; font-size:0.82rem; color:var(--muted);">
-        📥 <strong style="color:var(--black);">Download as PDF</strong> — coming soon. Copy and paste into Word or Google Docs for now.
       </div>
     </div>
 
