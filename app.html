@@ -709,6 +709,22 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    .btn-export {
+      padding: 8px 14px;
+      background: var(--black);
+      color: white;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-export:hover { background: #333; }
+
     /* 2-COLUMN RESULTS LAYOUT */
     .results-grid {
       display: grid;
@@ -943,10 +959,7 @@ Include the role title, responsibilities, required skills, and qualifications fo
             </div>
           </div>
 
-          <!-- PDF NOTE -->
-          <div style="padding: 12px 16px; background: white; border: 1px solid var(--border); border-radius:6px; font-size:0.78rem; color:var(--muted); line-height:1.5;">
-            📥 <strong style="color:var(--black);">Download as PDF</strong> — coming soon. Copy and paste into Word or Google Docs for now.
-          </div>
+
 
         </div>
 
@@ -959,7 +972,9 @@ Include the role title, responsibilities, required skills, and qualifications fo
                 <span class="cv-badge">AI Rewritten</span>
               </div>
               <div class="cv-actions">
-                <button class="btn-secondary" onclick="copyCV()" style="font-size:0.8rem; padding:8px 16px;">Copy to Clipboard</button>
+                <button class="btn-secondary" onclick="copyCV()" style="font-size:0.8rem; padding:8px 16px;">Copy</button>
+                <button class="btn-export" onclick="exportPDF()">↓ PDF</button>
+                <button class="btn-export" onclick="exportWord()">↓ Word</button>
               </div>
             </div>
             <div class="cv-output-body" id="cvOutput"></div>
@@ -1199,6 +1214,90 @@ Include the role title, responsibilities, required skills, and qualifications fo
         toast.classList.add('show');
         setTimeout(() => toast.classList.remove('show'), 2500);
       });
+    }
+
+    // ── EXPORT PDF ────────────────────────────────────────────────────
+    function exportPDF() {
+      const text = document.getElementById('cvOutput').textContent;
+      if (!text) return;
+
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>Tailored Resume</title>
+          <style>
+            body {
+              font-family: Georgia, serif;
+              font-size: 11pt;
+              line-height: 1.6;
+              margin: 40px;
+              color: #111;
+            }
+            pre {
+              white-space: pre-wrap;
+              font-family: Georgia, serif;
+              font-size: 11pt;
+              line-height: 1.6;
+            }
+            @media print {
+              body { margin: 20px; }
+            }
+          </style>
+        </head>
+        <body>
+          <pre>${text.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
+          <script>
+            window.onload = function() {
+              window.print();
+              setTimeout(() => window.close(), 500);
+            }
+          <\/script>
+        </body>
+        </html>
+      `);
+      printWindow.document.close();
+    }
+
+    // ── EXPORT WORD ───────────────────────────────────────────────────
+    function exportWord() {
+      const text = document.getElementById('cvOutput').textContent;
+      if (!text) return;
+
+      // Convert plain text to basic HTML for Word
+      const lines = text.split('\n');
+      let html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>Tailored Resume</title><style>body{font-family:Calibri,sans-serif;font-size:11pt;line-height:1.5;margin:40px;}p{margin:4px 0;}</style></head><body>';
+
+      lines.forEach(line => {
+        const trimmed = line.trim();
+        if (!trimmed) {
+          html += '<p>&nbsp;</p>';
+        } else if (trimmed.startsWith('•') || trimmed.startsWith('-')) {
+          html += `<p style="margin-left:20px;">${trimmed.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>`;
+        } else {
+          html += `<p><strong>${trimmed.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</strong></p>`;
+        }
+      });
+
+      html += '</body></html>';
+
+      const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'Tailored_Resume.doc';
+      a.click();
+      URL.revokeObjectURL(url);
+
+      const toast = document.getElementById('toast');
+      toast.textContent = 'Word document downloaded ✓';
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+        toast.textContent = 'Copied to clipboard ✓';
+      }, 2500);
     }
 
     // ── RESET ─────────────────────────────────────────────────────────
