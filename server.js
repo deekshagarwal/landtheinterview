@@ -57,33 +57,37 @@ app.post('/api/tailor', upload.single('cv'), async (req, res) => {
 
     console.log('Calling Groq API...');
 
-    const prompt = `You are an expert resume writer. Tailor this candidate's CV to match the job description exactly.
+    const prompt = `You are the hiring manager at the company in this JD. You know exactly what skills and experience would get a resume shortlisted.
 
-Return ONLY a valid JSON object with this exact structure. No markdown, no explanation, no code blocks:
+Rewrite the candidate's CV to match this JD — genuine, balanced, no keyword stuffing, no underselling. Do not add any skills, tools, or experience not already present in the CV. Only reframe and reorder what exists. Maintain the same section order as the original CV. Match the length of the original CV closely.
+
+Score the match based on keyword overlap, skills alignment, and experience relevance. Only flag missing keywords where the gap is significant and would genuinely hurt shortlisting chances.
+
+Return ONLY a valid JSON object. No markdown, no explanation:
 {
-  "score": <number 0-100>,
+  "score": <0-100, based on keyword overlap, skills alignment and experience relevance>,
   "keywords": {
     "matched": ["keyword1", "keyword2"],
     "partial": ["keyword3"],
-    "missing": ["keyword4"]
+    "missing": ["only significant gaps that hurt shortlisting"]
   },
-  "tailored_cv": "full rewritten CV as plain text preserving all sections",
-  "improvements": ["change 1", "change 2", "change 3"],
-  "better_than": <number 50-95>
+  "tailored_cv": "full rewritten CV as plain text, same section order as original, same length as original",
+  "improvements": ["specific change 1", "specific change 2", "specific change 3"],
+  "better_than": <50-95, estimated based on how well the CV matches the JD compared to a typical applicant>
 }
 
 CV:
-${cvText.slice(0, 3000)}
+${cvText.slice(0, 8000)}
 
 JD:
-${jd.slice(0, 3000)}`;
+${jd.slice(0, 8000)}`;
 
     const response = await axios.post(
       'https://api.groq.com/openai/v1/chat/completions',
       {
         model: 'llama-3.3-70b-versatile',
         messages: [
-          { role: 'system', content: 'You are an expert resume writer. Always respond with valid JSON only.' },
+          { role: 'system', content: 'You are an expert resume writer and hiring manager. Always respond with valid JSON only. No markdown, no explanation.' },
           { role: 'user', content: prompt }
         ],
         temperature: 0.7,
