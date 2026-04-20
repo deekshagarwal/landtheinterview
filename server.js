@@ -57,23 +57,43 @@ app.post('/api/tailor', upload.single('cv'), async (req, res) => {
 
     console.log('Calling Groq API...');
 
-    const prompt = `You are the hiring manager at the company in this JD. You know exactly what skills and experience would get a resume shortlisted.
+    const prompt = `You are the hiring manager at the company in this JD. You know exactly 
+what skills and experience would get a resume shortlisted.
 
-Rewrite the candidate's CV to match this JD — genuine, balanced, no keyword stuffing, no underselling. Do not add any skills, tools, or experience not already present in the CV. Only reframe and reorder what exists. Maintain the same section order as the original CV. Match the length of the original CV closely.
+Rewrite the candidate's CV to match this JD with these strict rules:
 
-Score the match based on keyword overlap, skills alignment, and experience relevance. Only flag missing keywords where the gap is significant and would genuinely hurt shortlisting chances.
+1. NEVER remove quantified achievements — revenue numbers, percentages, 
+   and metrics must be preserved exactly as written.
+2. Do not add skills, tools, or experience not present in the CV. 
+   Only reframe and reorder what exists.
+3. Use the exact terminology from the JD wherever the candidate's 
+   experience maps to it — even if they used different words. 
+   For example if JD says "prompt engineering" and candidate lists 
+   AI tools, reframe that experience using JD language.
+4. Surface implicit skills explicitly — if the candidate has a B.Tech 
+   and worked with engineering teams, call out technical fluency. 
+   If they use AI tools, call out AI nativity.
+5. Maintain the same section order as the original CV.
+6. Match the length of the original CV — do not cut bullets.
+7. Prioritise and reorder bullets within each role so the most JD-relevant 
+   achievements appear first.
+8. Score based on keyword overlap, skills alignment, and experience relevance.
+9. Only flag missing keywords where the gap is significant and would 
+   genuinely hurt shortlisting chances.
 
 Return ONLY a valid JSON object. No markdown, no explanation:
 {
-  "score": <0-100, based on keyword overlap, skills alignment and experience relevance>,
+  "score": <0-100>,
   "keywords": {
     "matched": ["keyword1", "keyword2"],
     "partial": ["keyword3"],
-    "missing": ["only significant gaps that hurt shortlisting"]
+    "missing": ["only significant gaps"]
   },
-  "tailored_cv": "full rewritten CV as plain text, same section order as original, same length as original",
-  "improvements": ["specific change 1", "specific change 2", "specific change 3"],
-  "better_than": <50-95, estimated based on how well the CV matches the JD compared to a typical applicant>
+  "tailored_cv": "full rewritten CV, same sections, same length, 
+                  all metrics preserved",
+  "improvements": ["specific change 1", "specific change 2", 
+                   "specific change 3"],
+  "better_than": <50-95>
 }
 
 CV:
