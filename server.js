@@ -2,7 +2,6 @@ const express = require('express');
 const multer = require('multer');
 const axios = require('axios');
 const cors = require('cors');
-const path = require('path');
 
 let pdfParse, mammoth;
 try { pdfParse = require('pdf-parse'); } catch(e) {}
@@ -31,6 +30,43 @@ async function extractText(buffer, originalname) {
   throw new Error('Please upload a PDF, Word (.docx), or text file.');
 }
 
+async function callGroq(messages, maxTokens = 4000) {
+  const apiKey = process.env.GROQ_API_KEY;
+  const response = await axios.post(
+    'https://api.groq.com/openai/v1/chat/completions',
+    {
+      model: 'llama-3.3-70b-versatile',
+      messages,
+      temperature: 0.7,
+      max_tokens: maxTokens
+    },
+    {
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      timeout: 55000
+    }
+  );
+  return response.data.choices[0].message.content.trim();
+}
+
+function cleanAndParse(text) {
+  let cleaned = text.trim();
+  if (cleaned.startsWith('```')) {
+    cleaned = cleaned.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+  }
+  // Remove bad control characters except newlines and tabs
+  cleaned = cleaned.replace(/[\x00-\x09\x0B\x0C\x0E-\x1F\x7F]/g, ' ');
+  try {
+    return JSON.parse(cleaned);
+  } catch(e) {
+    const match = cleaned.match(/\{[\s\S]*\}/);
+    if (match) return JSON.parse(match[0]);
+    throw new Error('Could not parse AI response');
+  }
+}
+
 app.post('/api/tailor', upload.single('cv'), async (req, res) => {
   try {
     const { jd, email } = req.body;
@@ -50,27 +86,44 @@ app.post('/api/tailor', upload.single('cv'), async (req, res) => {
     }
 
     const apiKey = process.env.GROQ_API_KEY;
-    if (!apiKey) {
-      console.error('GROQ_API_KEY is missing');
-      return res.status(500).json({ error: 'API key not configured.' });
-    }
+    if (!apiKey) return res.status(500).json({ error: 'API key not configured.' });
 
-    console.log('Calling Groq API...');
+    const cvSlice = cvText.slice(0, 8000);
+    const jdSlice = jd.slice(0, 4000);
 
-    const prompt = `You are the hiring manager at the company in this JD. You know exactly what skills and experience would get a resume shortlisted.
+    // ── CALL 1: Rewrite the full CV ───────────────────────────────────
+    console.log('Call 1: Rewriting CV...');
+
+    const rewritePrompt = `You are the hiring manager at the company in this JD. You know exactly what skills and experience would get a resume shortlisted.
 
 Rewrite the candidate's CV to match this JD with these strict rules:
-
-1. NEVER remove quantified achievements — revenue numbers, percentages, and metrics must be preserved exactly as written.
-2. Do not add skills, tools, or experience not present in the CV. Only reframe and reorder what exists.
-3. Use the exact terminology from the JD wherever the candidate's experience maps to it — even if they used different words. For example if JD says "prompt engineering" and candidate lists AI tools, reframe that experience using JD language.
-4. Surface implicit skills explicitly — if the candidate has a B.Tech and worked with engineering teams, call out technical fluency. If they use AI tools, call out AI nativity.
+1. NEVER remove any bullet points — every single bullet from the original must appear in the output.
+2. NEVER remove quantified achievements — all revenue numbers, percentages, and metrics must be preserved exactly.
+3. Do not add skills, tools, or experience not present in the CV. Only reframe and reorder what exists.
+4. Use exact JD terminology where the candidate's experience maps to it — weave it naturally, never append phrases at the end.
 5. Maintain the same section order as the original CV.
-6. Match the length of the original CV — do not cut bullets.
-7. Prioritise and reorder bullets within each role so the most JD-relevant achievements appear first.
-8. Weave JD terminology naturally into existing bullets — never append phrases at the end of a bullet. Rewrite the bullet entirely if needed to sound natural.
-9. Score based on keyword overlap, skills alignment, and experience relevance.
-10. Only flag missing keywords where the gap is significant and would genuinely hurt shortlisting chances.
+6. Reorder bullets within each role so the most JD-relevant achievements appear first.
+7. Surface implicit skills naturally — B.Tech background = technical fluency, AI tools usage = AI native, etc.
+
+Return ONLY the rewritten CV as plain text. No JSON, no explanation, no markdown.
+
+ORIGINAL CV:
+${cvSlice}
+
+JOB DESCRIPTION:
+${jdSlice}`;
+
+    const tailoredCV = await callGroq([
+      { role: 'system', content: 'You are an expert resume writer. Return only the rewritten CV as plain text. No JSON, no markdown, no explanation.' },
+      { role: 'user', content: rewritePrompt }
+    ], 4000);
+
+    console.log('Call 1 complete. CV length:', tailoredCV.length);
+
+    // ── CALL 2: Generate score + keywords + improvements ──────────────
+    console.log('Call 2: Generating analysis...');
+
+    const analysisPrompt = `Compare this candidate's CV against the job description and return a JSON analysis.
 
 Return ONLY a valid JSON object. No markdown, no explanation:
 {
@@ -78,58 +131,37 @@ Return ONLY a valid JSON object. No markdown, no explanation:
   "keywords": {
     "matched": ["keyword1", "keyword2"],
     "partial": ["keyword3"],
-    "missing": ["only significant gaps that hurt shortlisting"]
+    "missing": ["only significant gaps that would hurt shortlisting"]
   },
-  "tailored_cv": "full rewritten CV as plain text, same section order as original, same length as original, all metrics preserved",
-  "improvements": ["specific change 1", "specific change 2", "specific change 3"],
-  "better_than": <50-95, estimated based on how well the CV matches the JD compared to a typical applicant>
+  "improvements": ["specific change made 1", "specific change made 2", "specific change made 3"],
+  "better_than": <50-95, estimated percentile vs typical applicant>
 }
 
 CV:
-${cvText.slice(0, 8000)}
+${cvSlice.slice(0, 2000)}
 
 JD:
-${jd.slice(0, 8000)}`;
+${jdSlice.slice(0, 2000)}`;
 
-    const response = await axios.post(
-      'https://api.groq.com/openai/v1/chat/completions',
-      {
-        model: 'llama-3.3-70b-versatile',
-        messages: [
-          { role: 'system', content: 'You are an expert resume writer and hiring manager. Always respond with valid JSON only. No markdown, no explanation.' },
-          { role: 'user', content: prompt }
-        ],
-        temperature: 0.7,
-        max_tokens: 8000
-      },
-      {
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json'
-        },
-        timeout: 55000
-      }
-    );
+    const analysisRaw = await callGroq([
+      { role: 'system', content: 'You are a resume analyst. Always respond with valid JSON only.' },
+      { role: 'user', content: analysisPrompt }
+    ], 1000);
 
-    console.log('Groq responded successfully');
+    console.log('Call 2 complete.');
 
-    let text = response.data.choices[0].message.content.trim();
-    if (text.startsWith('```')) {
-      text = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-    }
+    const analysis = cleanAndParse(analysisRaw);
 
-    // Clean bad control characters that break JSON parsing
-    text = text.replace(/[\x00-\x09\x0B\x0C\x0E-\x1F\x7F]/g, ' ');
+    // Combine both calls into final result
+    const result = {
+      score: analysis.score,
+      keywords: analysis.keywords,
+      tailored_cv: tailoredCV,
+      improvements: analysis.improvements,
+      better_than: analysis.better_than
+    };
 
-    let result;
-    try {
-      result = JSON.parse(text);
-    } catch(e) {
-      const match = text.match(/\{[\s\S]*\}/);
-      if (match) result = JSON.parse(match[0]);
-      else throw new Error('Could not parse response');
-    }
-
+    // Brevo (non-blocking)
     if (email && email.includes('@') && process.env.BREVO_API_KEY) {
       axios.post(
         'https://api.brevo.com/v3/contacts',
