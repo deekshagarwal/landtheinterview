@@ -134,7 +134,7 @@ Return ONLY the JSON. No preamble, no markdown.`;
 
   } catch (error) {
     console.error('Tailor error:', error.message);
-    if (error.response?.data) console.error('API error:', JSON.stringify(error.response.data));
+    if (error.response?.data) console.error('API error full:', JSON.stringify(error.response.data)); console.error('API status:', error.response?.status); console.error('API headers:', JSON.stringify(error.response?.headers));
     res.status(500).json({ error: 'Something went wrong. Please try again.' });
   }
 });
