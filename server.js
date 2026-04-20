@@ -68,8 +68,9 @@ Rewrite the candidate's CV to match this JD with these strict rules:
 5. Maintain the same section order as the original CV.
 6. Match the length of the original CV — do not cut bullets.
 7. Prioritise and reorder bullets within each role so the most JD-relevant achievements appear first.
-8. Score based on keyword overlap, skills alignment, and experience relevance.
-9. Only flag missing keywords where the gap is significant and would genuinely hurt shortlisting chances.
+8. Weave JD terminology naturally into existing bullets — never append phrases at the end of a bullet. Rewrite the bullet entirely if needed to sound natural.
+9. Score based on keyword overlap, skills alignment, and experience relevance.
+10. Only flag missing keywords where the gap is significant and would genuinely hurt shortlisting chances.
 
 Return ONLY a valid JSON object. No markdown, no explanation:
 {
@@ -99,7 +100,7 @@ ${jd.slice(0, 8000)}`;
           { role: 'user', content: prompt }
         ],
         temperature: 0.7,
-        max_tokens: 4000
+        max_tokens: 8000
       },
       {
         headers: {
